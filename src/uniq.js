@@ -4,6 +4,11 @@
 
 function uniq(){
 	this.keys = {}
+	this.cnt = 0;
+}
+
+uniq.prototype.length = function(){
+	return this.cnt;
 }
 
 uniq.prototype.push = function (key){
@@ -20,6 +25,7 @@ uniq.prototype._do_push = function (key){
 		return false;
 	}else {
 		this.keys[key]=1;
+		this.cnt +=1;
 		return true;
 	}
 }
@@ -35,6 +41,7 @@ uniq.prototype.pop = function (key){
 uniq.prototype._do_pop = function (key){
 	if(key in this.keys){
 		delete this.keys[key];
+		this.cnt -=1;
 		return true;
 	}
 	return false;
@@ -51,5 +58,5 @@ function test(){
 }
 //test();
 exports.create=function(){
-	return new uniq;
+	return new uniq();
 }

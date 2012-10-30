@@ -3,8 +3,6 @@
  */
 var HTTP = require('http');
 var URL = require('url');
-var wrapper = require('querystring');
-var request = require('request');
 
 var ip="172.18.218.28"
 	,port=23456
@@ -33,6 +31,7 @@ function push(url_list){
 
 //pull some crawl requests, need to ack when crawl is finished, otherwise they will be back to pool again later(180s)
 function pull(max_num,callback){
+	callback = callback || console.log;
 	post_data(base_url+'pull',max_num,function(data){
 		callback(JSON.parse(data));				
 	});
@@ -56,7 +55,14 @@ function test(){
 
 }
 
-test();
+//test();
+
+//console.log(process.argv);
+//console.log(require('./tools').filename);
+if(require('./tools').filename==='pool_client.js'){
+	require('./client').create({ack:ack,push:push,pull:pull},process.argv[2]);	
+//	console.log("running");
+}
 
 exports.ack=ack;
 exports.push=push;

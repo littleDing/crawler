@@ -1,25 +1,18 @@
-/*
- * fetcher a requested url to html
- */
-var HTTP = require('http');
-var URL = require('url');
-
-function fetch(url,callback){
-	var option = URL.parse(url);
-	var req = HTTP.request(option,function(res){
-		res.on('data',function(buff){
-			callback(buff.toString());
-		});
+var util = require('util'),events=require('events');
+function fetcher(){
+	this.pool = null;
+}
+util.inherits(fetcher,events.EventEmitter);
+fetcher.prototype.run=function(pool){
+	console.log('run with pool : '+pool + this.pool);
+	this.pool = pool;
+	setTimeout(this.do_run,10,this);	
+}
+fetcher.prototype.do_run=function(instance){ 
+	instance.pool.pull(1,function(urls){
+		console.log(urls);
+		instance.pool.ack(urls);
 	});
-	req.setHeader('User-Agent','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4');
-	req.end();
+	console.log('running');	
 }
-
-function test(){
-	fetch('http://localhost:9999/');
-	//fetch('http://localhost/',console.log);
-	//fetch('http://www.baidu.com/',console.log);
-}
-
-exports.fetch=fetch;
-test();
+exports.create=function(){return new fetcher();}
