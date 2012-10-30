@@ -36,15 +36,17 @@ pool.prototype.pull=function(max_num,callback){
 	console.log('pull : '+max_num);  
 	urls = this.queue.pop(max_num);
 	this.uniq_waiting.push(urls);
-	var timer = setTimeout(function(){
-		for(i in urls){
-			var url = urls[i];
-			if(this.uniq_waiting.pop(url)){
-				this.queue.push_front(url);	
-			}
-		}	
-	},this.args.ack_timeout);
-	this.waiting_timers.push(timer);
+	if(urls.length!=0){
+		var timer = setTimeout(function(){
+			for(i in urls){
+				var url = urls[i];
+				if(this.uniq_waiting.pop(url)){
+					this.queue.push_front(url);	
+				}
+			}	
+		},this.args.ack_timeout);
+		this.waiting_timers.push(timer);
+	}
 	callback(urls);
 }
 
@@ -62,6 +64,7 @@ pool.prototype.ack=function(url_list){
 			clearTimeout(this.waiting_timers[i]);
 		this.waiting_timer = [];
 	}
+	console.log('ack ends. waiting_size:'+this.uniq_waiting.length());
 }
 
 function test(){

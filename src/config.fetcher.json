@@ -1,0 +1,10 @@
+[
+	{
+		"pattern":".*"
+		,"handler":"./fetchers.fetch"
+	}
+	,{
+		"pattern":"99"
+		,"handler":"function(url){return url;}"
+	}
+]

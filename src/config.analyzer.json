@@ -1,0 +1,14 @@
+{
+	"url_generator":[
+		{
+			"pattern":"*"
+			,"handler":"console.log"
+		}
+	]
+	,"parser":[
+		{
+			"pattern":"*"
+			,"handler":"console.log"
+		}	
+	]
+}
