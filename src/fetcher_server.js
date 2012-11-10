@@ -15,23 +15,24 @@ function fetcher(config){
 util.inherits(fetcher,events.EventEmitter);
 fetcher.prototype.run=function(pool){
 	console.log('run with pool : '+pool + this.pool);
-	_self = this;
-	_self.pool = pool;
-	setTimeout(function(){_self.do_run()},10);	
+	this.pool = pool;
+	instance = this;
+	setInterval(function(){instance.do_run(instance);},1000);	
 }
-fetcher.prototype.do_run=function(){ 
-	_self = this;
-	_self.pool.pull(10,function(urls){
+fetcher.prototype.do_run=function(instance){
+	instance.pool.pull(1,function(urls){
 		for(i in urls){
-			url = urls[i];
-			patterns = _self.router.find(url);
-			patterns.push('__default_fetcher');			 
-			console.log('fetching url : ' + urls + ' of pattern : /'+patterns[0]+'/');
-			_self.emit(patterns[0],url,function(html){
-				_self.emit('data',url,html);
-				_self.pool.ack([url]);
-				setTimeout(function(){_self.do_run();},0);
-			});
+			var job = function(){
+				var url = urls[i];
+				var patterns = instance.router.find(url);
+				patterns.push('__default_fetcher');			 
+				console.log('fetching url : ' + url + ' of pattern : /'+patterns[0]+'/');
+				instance.emit(patterns[0],url,function(html){
+					instance.emit('data',url,html);
+					instance.pool.ack([url]);
+				});
+			};
+			job();
 		}
 	});
 }

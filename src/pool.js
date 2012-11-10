@@ -22,6 +22,7 @@ function pool(args){
 
 //push the some crawl requests
 pool.prototype.push=function(url_list){
+	//console.dir(this);
 	console.log('push : '+url_list);
 	for(i in url_list){
 		var url = url_list[i];
@@ -37,11 +38,12 @@ pool.prototype.pull=function(max_num,callback){
 	urls = this.queue.pop(max_num);
 	this.uniq_waiting.push(urls);
 	if(urls.length!=0){
+		var self = this;
 		var timer = setTimeout(function(){
 			for(i in urls){
 				var url = urls[i];
-				if(this.uniq_waiting.pop(url)){
-					this.queue.push_front(url);	
+				if(self.uniq_waiting.pop(url)){
+					self.queue.push_front(url);	
 				}
 			}	
 		},this.args.ack_timeout);

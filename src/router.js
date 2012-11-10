@@ -1,6 +1,7 @@
 var fs = require('fs')
 function regMapper(){
 	this.regs = []
+	this.reg_strings = {}
 }
 regMapper.prototype.find=function(key){
 	ret = []
@@ -13,7 +14,11 @@ regMapper.prototype.find=function(key){
 	return ret;
 }
 regMapper.prototype.add=function(reg_string){
-	this.regs.push(new RegExp(reg_string));
+	var tobe = new RegExp(reg_string);
+	if(! (reg_string in this.reg_strings)){
+		this.regs.push(tobe);
+		this.reg_strings[reg_string] = 1;
+	}
 }
 
 function data_walk(data){
@@ -53,7 +58,7 @@ function loadConfig(filename){
 }
 
 function test(){
-	console.log(loadConfig('config.fetcher.json'));
+	console.log(loadConfig('config.analyzer.json'));
 }
 test();
 exports.loadConfig=loadConfig;

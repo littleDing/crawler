@@ -3,9 +3,9 @@ var loadConfig = require('./router').loadConfig;
 var fetchers = require('./fetchers');
 function main(){
 	var pool = require('./pool').create()
-		,fetcher = require('./fetcher').create(loadConfig('./config.fetcher.json'),pool)
+		,fetcher = require('./fetcher_server').create(loadConfig('./config.fetcher.json'))
 		,analyzer = require('./analyzer').create(loadConfig('./config.analyzer.json'),pool);
-	fetcher.on('data',function(url,html){analyzer.analyze(url,html)});
+	fetcher.on('data',function(url,html){analyzer.analyze(url,html);});
 	seeds = []
 	process.argv.forEach(function(val,index){
 		if(index<=1) return ;
@@ -20,5 +20,6 @@ function main(){
 	});
 	pool.push(seeds);
 	fetcher.run(pool);
+	var pool_server = require('./pool_server').create(18080,pool);
 }
 main();
